@@ -1,0 +1,14 @@
+{
+  "name": "dab-ai",
+  "version": "1.0.0",
+  "description": "DAB AI - مساعد الذكاء الاصطناعي",
+  "private": true,
+  "scripts": {
+    "build": "echo DAB AI build complete"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3",
+    "@capacitor/cli": "^7.4.3"
+  }
+}
