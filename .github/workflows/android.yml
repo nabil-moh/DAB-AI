@@ -39,51 +39,17 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Configure signed release
+      - name: Build Debug APK
         working-directory: android
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          path = Path("app/build.gradle")
-          text = path.read_text()
-
-          signing = """
-              signingConfigs {
-                  release {
-                      storeFile file(System.getProperty("user.home") + "/.android/debug.keystore")
-                      storePassword "android"
-                      keyAlias "androiddebugkey"
-                      keyPassword "android"
-                  }
-              }
-          """
-
-          if "signingConfigs {" not in text:
-              text = text.replace("android {", "android {" + signing, 1)
-
-          text = text.replace(
-              "release {",
-              """release {
-                      signingConfig signingConfigs.release""",
-              1
-          )
-
-          path.write_text(text)
-          PY
-
-      - name: Build signed Release APK
-        working-directory: android
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleDebug
 
       - name: Verify APK
         run: |
-          ls -lh android/app/build/outputs/apk/release/
-          file android/app/build/outputs/apk/release/app-release.apk
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose android/app/build/outputs/apk/release/app-release.apk
+          ls -lh android/app/build/outputs/apk/debug/
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose android/app/build/outputs/apk/debug/app-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: DAB-AI-APK-Release
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: DAB-AI-APK-Android-13
+          path: android/app/build/outputs/apk/debug/app-debug.apk
