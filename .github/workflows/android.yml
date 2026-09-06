@@ -1,4 +1,4 @@
-name: Build DAB AI APK
+name: Build DAB AI Android APK
 
 on:
   workflow_dispatch:
@@ -11,49 +11,76 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Setup Java 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
+          node-version: 22
+          cache: npm
 
       - name: Install dependencies
         run: npm install
 
       - name: Prepare web files
         run: |
+          rm -rf www
           mkdir -p www
           cp index.html www/index.html
 
-      - name: Add Android platform
+      - name: Initialize Capacitor
         run: npx cap add android
 
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Build Debug APK
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+
+      - name: Configure Android compatibility
+        working-directory: android
         run: |
-          cd android
+          echo "===== Gradle files ====="
+          grep -R "minSdk\|targetSdk\|compileSdk" -n app/build.gradle* gradle.properties 2>/dev/null || true
+
+      - name: Build Debug APK
+        working-directory: android
+        run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew clean assembleDebug --stacktrace
 
       - name: Verify APK
         run: |
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+
+          echo "===== APK FILE ====="
+          ls -lh "$APK"
+
+          echo "===== APK TYPE ====="
+          file "$APK"
+
+          echo "===== APK SIGNATURE ====="
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
+
+          echo "===== PACKAGE INFO ====="
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -30
+
+      - name: Rename APK
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk \
+             android/app/build/outputs/apk/debug/DAB-AI.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: DAB-AI-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+          path: android/app/build/outputs/apk/debug/DAB-AI.apk
+
+**مهم:** لا تغيّر `capacitor.config.json` ولا `appId` الآن؛ أبقيه `com.dabai.app` حتى لا نحول التطبيق إلى تطبيق مختلف.
+
+بعد حفظ الملف، شغّل **Actions → Build DAB AI Android APK → Run workflow**. إذا نجح، أرسل لي نتيجة الـBuild الجديدة، وسأراجعها قبل أن تجرب التثبيت.
