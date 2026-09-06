@@ -95,7 +95,7 @@
       position: absolute;
       top: 48px;
       left: 0;
-      width: 180px;
+      width: 190px;
       background: white;
       color: #111827;
       border-radius: 12px;
@@ -289,6 +289,7 @@
 
     <div class="brand">
       <div class="logo">D</div>
+
       <div>
         <h1>DAB AI</h1>
         <span>مساعدك الذكي</span>
@@ -300,8 +301,8 @@
       <button
         class="menu-btn"
         id="menuBtn"
-        aria-label="القائمة"
-        type="button">
+        type="button"
+        aria-label="القائمة">
         ⋮
       </button>
 
@@ -377,319 +378,391 @@
 </div>
 
 <script>
-  "use strict";
+"use strict";
 
-  const input = document.getElementById("messageInput");
-  const chat = document.getElementById("chat");
-  const micBtn = document.getElementById("micBtn");
-  const sendBtn = document.getElementById("sendBtn");
+/*
+=========================================================
+DAB AI
+واجهة المحادثة + التعرف على الصوت الأصلي عبر Capacitor
+=========================================================
+*/
 
-  const menuBtn = document.getElementById("menuBtn");
-  const menu = document.getElementById("menu");
-  const newChatBtn = document.getElementById("newChatBtn");
-  const closeMenuBtn = document.getElementById("closeMenuBtn");
+const input = document.getElementById("messageInput");
+const chat = document.getElementById("chat");
+const micBtn = document.getElementById("micBtn");
+const sendBtn = document.getElementById("sendBtn");
 
-  const status = document.getElementById("status");
+const menuBtn = document.getElementById("menuBtn");
+const menu = document.getElementById("menu");
+const newChatBtn = document.getElementById("newChatBtn");
+const closeMenuBtn = document.getElementById("closeMenuBtn");
 
-  let recognition = null;
-  let recording = false;
+const status = document.getElementById("status");
 
-  /* =========================
-     إرسال الرسالة
-     ========================= */
+let recording = false;
+let speechPlugin = null;
 
-  input.addEventListener("keydown", function(event) {
 
-    if (event.key === "Enter") {
+/* =====================================================
+   تحميل إضافة التعرف على الصوت
+   ===================================================== */
 
-      event.preventDefault();
+function loadSpeechPlugin() {
 
-      sendMessage();
+  try {
+
+    if (
+      window.Capacitor &&
+      window.Capacitor.Plugins &&
+      window.Capacitor.Plugins.SpeechRecognition
+    ) {
+
+      speechPlugin =
+        window.Capacitor.Plugins.SpeechRecognition;
+
+      return speechPlugin;
     }
 
-  });
+  } catch (error) {
 
-  sendBtn.addEventListener("click", sendMessage);
+    console.log("Speech plugin error:", error);
 
-  function sendMessage() {
-
-    const text = input.value.trim();
-
-    if (!text) {
-      return;
-    }
-
-    const welcome = document.getElementById("welcome");
-
-    if (welcome) {
-      welcome.remove();
-    }
-
-    addMessage(text, "user");
-
-    input.value = "";
-
-    status.textContent = "جاري تجهيز الرد...";
-
-    setTimeout(function() {
-
-      addMessage(
-        "مرحبًا! أنا DAB AI 🤖\nتم استلام رسالتك بنجاح. سنربطني لاحقًا بمحرك الذكاء الاصطناعي الحقيقي.",
-        "ai"
-      );
-
-      status.textContent = "";
-
-    }, 500);
   }
 
-  /* =========================
-     إضافة رسالة
-     ========================= */
+  return null;
+}
 
-  function addMessage(text, type) {
 
-    const message = document.createElement("div");
+/* =====================================================
+   إرسال الرسالة
+   ===================================================== */
 
-    message.className = "message " + type;
+input.addEventListener("keydown", function(event) {
 
-    const bubble = document.createElement("div");
+  if (event.key === "Enter") {
 
-    bubble.className = "bubble";
+    event.preventDefault();
 
-    bubble.textContent = text;
-
-    message.appendChild(bubble);
-
-    chat.appendChild(message);
-
-    chat.scrollTop = chat.scrollHeight;
+    sendMessage();
   }
 
-  /* =========================
-     المحادثة الجديدة
-     ========================= */
+});
 
-  function newChat() {
+sendBtn.addEventListener("click", sendMessage);
 
-    stopRecording();
 
-    chat.innerHTML = `
-      <div class="welcome" id="welcome">
+function sendMessage() {
 
-        <div class="welcome-logo">D</div>
+  const text = input.value.trim();
 
-        <h2>مرحبًا بك في DAB AI</h2>
+  if (!text) {
+    return;
+  }
 
-        <p>
-          مساعدك الذكي للمحادثة والإجابة عن أسئلتك.<br>
-          اكتب رسالتك أو استخدم الميكروفون.
-        </p>
+  const welcome =
+    document.getElementById("welcome");
 
-      </div>
-    `;
+  if (welcome) {
+    welcome.remove();
+  }
 
-    input.value = "";
+  addMessage(text, "user");
+
+  input.value = "";
+
+  status.textContent =
+    "جاري تجهيز الرد...";
+
+
+  /*
+  -------------------------------------------------------
+  الرد الحالي تجريبي فقط.
+  سنربطه لاحقًا بمحرك الذكاء الاصطناعي الحقيقي.
+  -------------------------------------------------------
+  */
+
+  setTimeout(function() {
+
+    addMessage(
+      "مرحبًا! أنا DAB AI 🤖\nتم استلام رسالتك بنجاح. سنربطني لاحقًا بمحرك الذكاء الاصطناعي الحقيقي.",
+      "ai"
+    );
 
     status.textContent = "";
 
-    menu.classList.remove("show");
+  }, 500);
 
-    input.focus();
-  }
+}
 
-  newChatBtn.addEventListener("click", newChat);
 
-  /* =========================
-     القائمة ⋮
-     ========================= */
+/* =====================================================
+   إضافة رسالة
+   ===================================================== */
 
-  menuBtn.addEventListener("click", function(event) {
+function addMessage(text, type) {
+
+  const message =
+    document.createElement("div");
+
+  message.className =
+    "message " + type;
+
+  const bubble =
+    document.createElement("div");
+
+  bubble.className = "bubble";
+
+  bubble.textContent = text;
+
+  message.appendChild(bubble);
+
+  chat.appendChild(message);
+
+  chat.scrollTop =
+    chat.scrollHeight;
+}
+
+
+/* =====================================================
+   محادثة جديدة
+   ===================================================== */
+
+function newChat() {
+
+  stopRecording();
+
+  chat.innerHTML = `
+    <div class="welcome" id="welcome">
+
+      <div class="welcome-logo">D</div>
+
+      <h2>مرحبًا بك في DAB AI</h2>
+
+      <p>
+        مساعدك الذكي للمحادثة والإجابة عن أسئلتك.<br>
+        اكتب رسالتك أو استخدم الميكروفون.
+      </p>
+
+    </div>
+  `;
+
+  input.value = "";
+
+  status.textContent = "";
+
+  menu.classList.remove("show");
+
+  input.focus();
+}
+
+
+newChatBtn.addEventListener(
+  "click",
+  newChat
+);
+
+
+/* =====================================================
+   القائمة
+   ===================================================== */
+
+menuBtn.addEventListener(
+  "click",
+  function(event) {
 
     event.stopPropagation();
 
     menu.classList.toggle("show");
 
-  });
+  }
+);
 
-  closeMenuBtn.addEventListener("click", function() {
+
+closeMenuBtn.addEventListener(
+  "click",
+  function() {
 
     menu.classList.remove("show");
 
-  });
+  }
+);
 
-  document.addEventListener("click", function(event) {
 
-    if (!event.target.closest(".menu-wrapper")) {
+document.addEventListener(
+  "click",
+  function(event) {
+
+    if (
+      !event.target.closest(".menu-wrapper")
+    ) {
 
       menu.classList.remove("show");
 
     }
 
-  });
+  }
+);
 
-  /* =========================
-     التسجيل الصوتي
-     ========================= */
 
-  micBtn.addEventListener("click", toggleRecording);
+/* =====================================================
+   الميكروفون
+   ===================================================== */
 
-  function getSpeechRecognition() {
+micBtn.addEventListener(
+  "click",
+  toggleRecording
+);
 
-    return window.SpeechRecognition ||
-           window.webkitSpeechRecognition ||
-           null;
 
+async function toggleRecording() {
+
+  if (recording) {
+
+    await stopRecording();
+
+    return;
   }
 
-  function toggleRecording() {
+  await startRecording();
+}
 
-    if (recording) {
 
-      stopRecording();
+/* =====================================================
+   بدء التسجيل الأصلي
+   ===================================================== */
 
-      return;
-    }
+async function startRecording() {
 
-    startRecording();
+  speechPlugin = loadSpeechPlugin();
 
+  if (!speechPlugin) {
+
+    status.textContent =
+      "إضافة التعرف على الصوت غير موجودة داخل التطبيق.";
+
+    return;
   }
 
-  function startRecording() {
+  try {
 
-    const SpeechRecognition = getSpeechRecognition();
+    status.textContent =
+      "جاري طلب إذن الميكروفون...";
 
-    if (!SpeechRecognition) {
 
-      status.textContent =
-        "التسجيل الصوتي غير مدعوم في هذه البيئة.";
+    /*
+    -----------------------------------------------------
+    طلب صلاحية الميكروفون
+    -----------------------------------------------------
+    */
 
-      return;
+    if (
+      typeof speechPlugin.requestPermissions ===
+      "function"
+    ) {
+
+      await speechPlugin.requestPermissions();
+
     }
 
-    try {
 
-      recognition = new SpeechRecognition();
+    /*
+    -----------------------------------------------------
+    التأكد من الصلاحية
+    -----------------------------------------------------
+    */
 
-      recognition.lang = "ar-DZ";
+    if (
+      typeof speechPlugin.checkPermissions ===
+      "function"
+    ) {
 
-      recognition.interimResults = true;
+      const permissions =
+        await speechPlugin.checkPermissions();
 
-      recognition.continuous = false;
-
-      recognition.maxAlternatives = 1;
-
-      recognition.onstart = function() {
-
-        recording = true;
-
-        micBtn.classList.add("recording");
-
-        micBtn.textContent = "⏹️";
+      if (
+        permissions &&
+        permissions.speechRecognition ===
+        "denied"
+      ) {
 
         status.textContent =
-          "استمع إليك الآن... تحدث بوضوح.";
+          "اسمح للتطبيق باستخدام الميكروفون من إعدادات الهاتف.";
 
-      };
-
-      recognition.onresult = function(event) {
-
-        let text = "";
-
-        for (
-          let i = event.resultIndex;
-          i < event.results.length;
-          i++
-        ) {
-
-          text += event.results[i][0].transcript;
-
-        }
-
-        text = text.trim();
-
-        if (text) {
-
-          input.value = text;
-
-        }
-
-      };
-
-      recognition.onerror = function(event) {
-
-        recording = false;
-
-        micBtn.classList.remove("recording");
-
-        micBtn.textContent = "🎙️";
-
-        let message =
-          "تعذر استخدام التسجيل الصوتي.";
-
-        if (event.error === "not-allowed") {
-
-          message =
-            "اسمح للتطبيق باستخدام الميكروفون من إعدادات الهاتف.";
-
-        } else if (event.error === "no-speech") {
-
-          message =
-            "لم يتم اكتشاف كلام. حاول مرة أخرى.";
-
-        } else if (event.error === "network") {
-
-          message =
-            "تعذر الاتصال بخدمة التعرف على الصوت.";
-
-        }
-
-        status.textContent = message;
-
-      };
-
-      recognition.onend = function() {
-
-        recording = false;
-
-        micBtn.classList.remove("recording");
-
-        micBtn.textContent = "🎙️";
-
-      };
-
-      recognition.start();
-
-    } catch (error) {
-
-      recording = false;
-
-      micBtn.classList.remove("recording");
-
-      micBtn.textContent = "🎙️";
-
-      status.textContent =
-        "تعذر تشغيل التسجيل الصوتي.";
-
-    }
-
-  }
-
-  function stopRecording() {
-
-    if (recognition) {
-
-      try {
-
-        recognition.stop();
-
-      } catch (error) {
-        // لا شيء
+        return;
       }
 
     }
 
-    recognition = null;
+
+    recording = true;
+
+    micBtn.classList.add("recording");
+
+    micBtn.textContent = "⏹️";
+
+    status.textContent =
+      "استمع إليك الآن... تحدث بوضوح.";
+
+
+    /*
+    -----------------------------------------------------
+    بدء التعرف على الكلام
+    -----------------------------------------------------
+    */
+
+    const result =
+      await speechPlugin.start({
+
+        language: "ar-DZ",
+
+        maxResults: 1,
+
+        prompt:
+          "تحدث الآن إلى DAB AI",
+
+        partialResults: true,
+
+        popup: false
+
+      });
+
+
+    /*
+    -----------------------------------------------------
+    استقبال النتيجة
+    -----------------------------------------------------
+    */
+
+    if (
+      result &&
+      Array.isArray(result.matches) &&
+      result.matches.length > 0
+    ) {
+
+      input.value =
+        result.matches[0];
+
+      status.textContent =
+        "تم التعرف على كلامك.";
+
+    } else {
+
+      status.textContent =
+        "لم يتم التعرف على الكلام.";
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Speech recognition error:",
+      error
+    );
+
+    status.textContent =
+      "تعذر تشغيل التعرف على الصوت. تأكد من السماح بالميكروفون.";
+
+  } finally {
 
     recording = false;
 
@@ -698,6 +771,64 @@
     micBtn.textContent = "🎙️";
 
   }
+
+}
+
+
+/* =====================================================
+   إيقاف التسجيل
+   ===================================================== */
+
+async function stopRecording() {
+
+  try {
+
+    speechPlugin =
+      speechPlugin ||
+      loadSpeechPlugin();
+
+    if (
+      speechPlugin &&
+      typeof speechPlugin.stop ===
+      "function"
+    ) {
+
+      await speechPlugin.stop();
+
+    }
+
+  } catch (error) {
+
+    console.log(
+      "Speech stop error:",
+      error
+    );
+
+  }
+
+  recording = false;
+
+  micBtn.classList.remove(
+    "recording"
+  );
+
+  micBtn.textContent = "🎙️";
+
+}
+
+
+/* =====================================================
+   تشغيل عند فتح التطبيق
+   ===================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    loadSpeechPlugin();
+
+  }
+);
 
 </script>
 
