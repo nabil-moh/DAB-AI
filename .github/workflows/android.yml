@@ -24,16 +24,17 @@ jobs:
 
       - name: Prepare web files
         run: |
+          rm -rf www
           mkdir -p www
           cp index.html www/index.html
 
       - name: Initialize Capacitor
         run: npx cap add android
 
-      - name: Sync web app
+      - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Setup Java
+      - name: Setup Java 21
         uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -41,15 +42,21 @@ jobs:
 
       - name: Build Debug APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        run: ./gradlew clean assembleDebug
 
-      - name: Verify APK
+      - name: Check APK
         run: |
-          ls -lh android/app/build/outputs/apk/debug/
+          echo "===== APK ====="
+          ls -lh android/app/build/outputs/apk/debug/app-debug.apk
+          echo "===== FILE ====="
+          file android/app/build/outputs/apk/debug/app-debug.apk
+          echo "===== SIGNATURE ====="
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose android/app/build/outputs/apk/debug/app-debug.apk
+          echo "===== PACKAGE INFO ====="
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging android/app/build/outputs/apk/debug/app-debug.apk | head -20
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: DAB-AI-APK-Android-13
+          name: DAB-AI-APK-Android13
           path: android/app/build/outputs/apk/debug/app-debug.apk
