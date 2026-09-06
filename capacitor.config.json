@@ -1,0 +1,6 @@
+{
+  "appId": "com.dabai.app",
+  "appName": "DAB AI",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}
