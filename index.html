@@ -30,7 +30,6 @@
       background: white;
     }
 
-    /* الرأس */
     .header {
       height: 64px;
       display: flex;
@@ -72,15 +71,57 @@
       margin-top: 2px;
     }
 
+    .menu-wrapper {
+      position: relative;
+    }
+
     .menu-btn {
       border: 0;
       background: transparent;
       color: white;
       font-size: 24px;
       cursor: pointer;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
     }
 
-    /* المحادثة */
+    .menu-btn:active {
+      background: rgba(255,255,255,.12);
+    }
+
+    .menu {
+      display: none;
+      position: absolute;
+      top: 48px;
+      left: 0;
+      width: 180px;
+      background: white;
+      color: #111827;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.18);
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    .menu.show {
+      display: block;
+    }
+
+    .menu button {
+      width: 100%;
+      border: 0;
+      background: white;
+      padding: 14px;
+      text-align: right;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .menu button:active {
+      background: #f3f4f6;
+    }
+
     .chat {
       flex: 1;
       overflow-y: auto;
@@ -150,7 +191,6 @@
       border-bottom-left-radius: 5px;
     }
 
-    /* منطقة الكتابة */
     .input-area {
       position: fixed;
       bottom: 0;
@@ -209,7 +249,14 @@
       color: white;
     }
 
-    /* الهاتف */
+    .status {
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+      min-height: 18px;
+      margin-top: 4px;
+    }
+
     @media (max-width: 600px) {
       .header {
         height: 60px;
@@ -239,6 +286,7 @@
 <div class="app">
 
   <header class="header">
+
     <div class="brand">
       <div class="logo">D</div>
       <div>
@@ -247,31 +295,61 @@
       </div>
     </div>
 
-    <button class="menu-btn" onclick="newChat()" aria-label="محادثة جديدة">
-      ⋮
-    </button>
+    <div class="menu-wrapper">
+
+      <button
+        class="menu-btn"
+        id="menuBtn"
+        aria-label="القائمة"
+        type="button">
+        ⋮
+      </button>
+
+      <div class="menu" id="menu">
+
+        <button
+          type="button"
+          id="newChatBtn">
+          🆕 محادثة جديدة
+        </button>
+
+        <button
+          type="button"
+          id="closeMenuBtn">
+          ✕ إغلاق القائمة
+        </button>
+
+      </div>
+
+    </div>
+
   </header>
 
   <main class="chat" id="chat">
 
     <div class="welcome" id="welcome">
+
       <div class="welcome-logo">D</div>
+
       <h2>مرحبًا بك في DAB AI</h2>
+
       <p>
         مساعدك الذكي للمحادثة والإجابة عن أسئلتك.<br>
         اكتب رسالتك أو استخدم الميكروفون.
       </p>
+
     </div>
 
   </main>
 
   <div class="input-area">
+
     <div class="input-box">
 
       <button
         class="icon-btn mic-btn"
         id="micBtn"
-        onclick="toggleRecording()"
+        type="button"
         aria-label="تسجيل صوتي">
         🎙️
       </button>
@@ -280,43 +358,69 @@
         id="messageInput"
         type="text"
         placeholder="اكتب رسالتك..."
-        autocomplete="off"
-      >
+        autocomplete="off">
 
       <button
         class="icon-btn send-btn"
-        onclick="sendMessage()"
+        id="sendBtn"
+        type="button"
         aria-label="إرسال">
         ➤
       </button>
 
     </div>
+
+    <div class="status" id="status"></div>
+
   </div>
 
 </div>
 
 <script>
+  "use strict";
+
   const input = document.getElementById("messageInput");
   const chat = document.getElementById("chat");
   const micBtn = document.getElementById("micBtn");
+  const sendBtn = document.getElementById("sendBtn");
+
+  const menuBtn = document.getElementById("menuBtn");
+  const menu = document.getElementById("menu");
+  const newChatBtn = document.getElementById("newChatBtn");
+  const closeMenuBtn = document.getElementById("closeMenuBtn");
+
+  const status = document.getElementById("status");
 
   let recognition = null;
   let recording = false;
 
-  // إرسال بالضغط على Enter
+  /* =========================
+     إرسال الرسالة
+     ========================= */
+
   input.addEventListener("keydown", function(event) {
+
     if (event.key === "Enter") {
+
       event.preventDefault();
+
       sendMessage();
     }
+
   });
 
+  sendBtn.addEventListener("click", sendMessage);
+
   function sendMessage() {
+
     const text = input.value.trim();
 
-    if (!text) return;
+    if (!text) {
+      return;
+    }
 
     const welcome = document.getElementById("welcome");
+
     if (welcome) {
       welcome.remove();
     }
@@ -325,104 +429,276 @@
 
     input.value = "";
 
-    // رد تجريبي مؤقت
-    setTimeout(() => {
+    status.textContent = "جاري تجهيز الرد...";
+
+    setTimeout(function() {
+
       addMessage(
         "مرحبًا! أنا DAB AI 🤖\nتم استلام رسالتك بنجاح. سنربطني لاحقًا بمحرك الذكاء الاصطناعي الحقيقي.",
         "ai"
       );
+
+      status.textContent = "";
+
     }, 500);
   }
 
+  /* =========================
+     إضافة رسالة
+     ========================= */
+
   function addMessage(text, type) {
+
     const message = document.createElement("div");
+
     message.className = "message " + type;
 
     const bubble = document.createElement("div");
+
     bubble.className = "bubble";
+
     bubble.textContent = text;
 
     message.appendChild(bubble);
+
     chat.appendChild(message);
 
     chat.scrollTop = chat.scrollHeight;
   }
 
-  // محادثة جديدة
+  /* =========================
+     المحادثة الجديدة
+     ========================= */
+
   function newChat() {
+
+    stopRecording();
+
     chat.innerHTML = `
       <div class="welcome" id="welcome">
+
         <div class="welcome-logo">D</div>
+
         <h2>مرحبًا بك في DAB AI</h2>
+
         <p>
           مساعدك الذكي للمحادثة والإجابة عن أسئلتك.<br>
           اكتب رسالتك أو استخدم الميكروفون.
         </p>
+
       </div>
     `;
 
     input.value = "";
+
+    status.textContent = "";
+
+    menu.classList.remove("show");
+
     input.focus();
   }
 
-  // التسجيل الصوتي
+  newChatBtn.addEventListener("click", newChat);
+
+  /* =========================
+     القائمة ⋮
+     ========================= */
+
+  menuBtn.addEventListener("click", function(event) {
+
+    event.stopPropagation();
+
+    menu.classList.toggle("show");
+
+  });
+
+  closeMenuBtn.addEventListener("click", function() {
+
+    menu.classList.remove("show");
+
+  });
+
+  document.addEventListener("click", function(event) {
+
+    if (!event.target.closest(".menu-wrapper")) {
+
+      menu.classList.remove("show");
+
+    }
+
+  });
+
+  /* =========================
+     التسجيل الصوتي
+     ========================= */
+
+  micBtn.addEventListener("click", toggleRecording);
+
+  function getSpeechRecognition() {
+
+    return window.SpeechRecognition ||
+           window.webkitSpeechRecognition ||
+           null;
+
+  }
+
   function toggleRecording() {
 
-    const SpeechRecognition =
-      window.SpeechRecognition ||
-      window.webkitSpeechRecognition;
+    if (recording) {
+
+      stopRecording();
+
+      return;
+    }
+
+    startRecording();
+
+  }
+
+  function startRecording() {
+
+    const SpeechRecognition = getSpeechRecognition();
 
     if (!SpeechRecognition) {
-      alert("التعرف على الصوت غير مدعوم في هذا المتصفح.");
+
+      status.textContent =
+        "التسجيل الصوتي غير مدعوم في هذه البيئة.";
+
       return;
     }
 
-    if (recording) {
-      recognition.stop();
-      return;
+    try {
+
+      recognition = new SpeechRecognition();
+
+      recognition.lang = "ar-DZ";
+
+      recognition.interimResults = true;
+
+      recognition.continuous = false;
+
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = function() {
+
+        recording = true;
+
+        micBtn.classList.add("recording");
+
+        micBtn.textContent = "⏹️";
+
+        status.textContent =
+          "استمع إليك الآن... تحدث بوضوح.";
+
+      };
+
+      recognition.onresult = function(event) {
+
+        let text = "";
+
+        for (
+          let i = event.resultIndex;
+          i < event.results.length;
+          i++
+        ) {
+
+          text += event.results[i][0].transcript;
+
+        }
+
+        text = text.trim();
+
+        if (text) {
+
+          input.value = text;
+
+        }
+
+      };
+
+      recognition.onerror = function(event) {
+
+        recording = false;
+
+        micBtn.classList.remove("recording");
+
+        micBtn.textContent = "🎙️";
+
+        let message =
+          "تعذر استخدام التسجيل الصوتي.";
+
+        if (event.error === "not-allowed") {
+
+          message =
+            "اسمح للتطبيق باستخدام الميكروفون من إعدادات الهاتف.";
+
+        } else if (event.error === "no-speech") {
+
+          message =
+            "لم يتم اكتشاف كلام. حاول مرة أخرى.";
+
+        } else if (event.error === "network") {
+
+          message =
+            "تعذر الاتصال بخدمة التعرف على الصوت.";
+
+        }
+
+        status.textContent = message;
+
+      };
+
+      recognition.onend = function() {
+
+        recording = false;
+
+        micBtn.classList.remove("recording");
+
+        micBtn.textContent = "🎙️";
+
+      };
+
+      recognition.start();
+
+    } catch (error) {
+
+      recording = false;
+
+      micBtn.classList.remove("recording");
+
+      micBtn.textContent = "🎙️";
+
+      status.textContent =
+        "تعذر تشغيل التسجيل الصوتي.";
+
     }
 
-    recognition = new SpeechRecognition();
+  }
 
-    recognition.lang = "ar-DZ";
-    recognition.interimResults = true;
-    recognition.continuous = false;
+  function stopRecording() {
 
-    recognition.onstart = function() {
-      recording = true;
-      micBtn.classList.add("recording");
-      micBtn.textContent = "⏹️";
-    };
+    if (recognition) {
 
-    recognition.onresult = function(event) {
+      try {
 
-      let text = "";
+        recognition.stop();
 
-      for (
-        let i = event.resultIndex;
-        i < event.results.length;
-        i++
-      ) {
-        text += event.results[i][0].transcript;
+      } catch (error) {
+        // لا شيء
       }
 
-      input.value = text;
-    };
+    }
 
-    recognition.onend = function() {
-      recording = false;
-      micBtn.classList.remove("recording");
-      micBtn.textContent = "🎙️";
-    };
+    recognition = null;
 
-    recognition.onerror = function() {
-      recording = false;
-      micBtn.classList.remove("recording");
-      micBtn.textContent = "🎙️";
-    };
+    recording = false;
 
-    recognition.start();
+    micBtn.classList.remove("recording");
+
+    micBtn.textContent = "🎙️";
+
   }
+
 </script>
 
 </body>
