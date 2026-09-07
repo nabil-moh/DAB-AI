@@ -1,37 +1,33 @@
 name: Build DAB AI Android APK
 
-"on":
+on:
 workflow_dispatch:
-push:
-branches:
-- main
 
 jobs:
 build:
 runs-on: ubuntu-latest
-steps:
-- name: Checkout
-uses: actions/checkout@v4
 
-  - name: Setup Node.js
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Setup Node
     uses: actions/setup-node@v4
     with:
-      node-version: "22"
-      cache: npm
+      node-version: 22
 
   - name: Install dependencies
     run: npm install
 
-  - name: Prepare web files
+  - name: Prepare web
     run: |
-      rm -rf www
       mkdir -p www
       cp index.html www/index.html
 
-  - name: Initialize Capacitor
+  - name: Add Android
     run: npx cap add android
 
-  - name: Sync Capacitor
+  - name: Sync Android
     run: npx cap sync android
 
   - name: Setup Java
@@ -39,19 +35,12 @@ uses: actions/checkout@v4
     with:
       distribution: temurin
       java-version: "21"
-      cache: gradle
 
-  - name: Build Debug APK
+  - name: Build APK
     working-directory: android
     run: |
       chmod +x gradlew
-      ./gradlew clean assembleDebug --stacktrace
-
-  - name: Verify APK
-    run: |
-      APK="android/app/build/outputs/apk/debug/app-debug.apk"
-      test -f "$APK"
-      ls -lh "$APK"
+      ./gradlew assembleDebug
 
   - name: Upload APK
     uses: actions/upload-artifact@v4
