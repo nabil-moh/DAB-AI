@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8"><meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover"
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
+«»
 
-  <meta name="theme-color" content="#000000">
-
-  <title>DAB AI</title>
-
-  <style>
+  <meta name="theme-color" content="#000000">  <title>DAB AI</title>  <style>
     * {
       box-sizing: border-box;
       margin: 0;
@@ -77,9 +71,7 @@
       align-items: center;
       justify-content: space-between;
 
-      padding:
-        0
-        16px;
+      padding: 0 16px;
 
       background: #000000;
       color: #ffffff;
@@ -210,7 +202,7 @@
       overflow-y: auto;
       overflow-x: hidden;
 
-      padding: 20px 14px 125px;
+      padding: 20px 14px 145px;
 
       scroll-behavior: smooth;
 
@@ -239,20 +231,14 @@
     .welcome {
       text-align: center;
 
-      padding:
-        55px
-        15px
-        20px;
+      padding: 55px 15px 20px;
     }
 
     .welcome-logo {
       width: 72px;
       height: 72px;
 
-      margin:
-        auto
-        auto
-        18px;
+      margin: auto auto 18px;
 
       border-radius: 22px;
 
@@ -266,8 +252,7 @@
       font-size: 32px;
       font-weight: bold;
 
-      box-shadow:
-        0 0 30px rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
     }
 
     .welcome h2 {
@@ -334,6 +319,147 @@
     }
 
     /* =========================
+       ATTACHMENT IN MESSAGE
+       ========================= */
+
+    .message-image {
+      display: block;
+
+      max-width: 240px;
+      max-height: 260px;
+
+      margin-top: 8px;
+
+      border-radius: 12px;
+
+      object-fit: cover;
+
+      border: 1px solid #3a3a3a;
+    }
+
+    .message-file {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-top: 8px;
+
+      padding: 9px 11px;
+
+      background: #151515;
+
+      border: 1px solid #363636;
+
+      border-radius: 10px;
+
+      font-size: 13px;
+
+      color: #ffffff;
+
+      word-break: break-word;
+    }
+
+    /* =========================
+       ATTACHMENT PREVIEW
+       ========================= */
+
+    .attachment-preview {
+      display: none;
+
+      max-width: 850px;
+
+      margin: 0 auto 8px;
+
+      padding: 8px;
+
+      border: 1px solid #303030;
+
+      border-radius: 14px;
+
+      background: #101010;
+    }
+
+    .attachment-preview.show {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .preview-image {
+      width: 58px;
+      height: 58px;
+
+      border-radius: 10px;
+
+      object-fit: cover;
+
+      border: 1px solid #333333;
+
+      flex-shrink: 0;
+    }
+
+    .preview-file-icon {
+      width: 58px;
+      height: 58px;
+
+      border-radius: 10px;
+
+      background: #202020;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 25px;
+
+      flex-shrink: 0;
+    }
+
+    .preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .preview-name {
+      color: #ffffff;
+
+      font-size: 14px;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .preview-size {
+      color: #888888;
+
+      font-size: 11px;
+
+      margin-top: 4px;
+    }
+
+    .remove-attachment {
+      width: 36px;
+      height: 36px;
+
+      flex-shrink: 0;
+
+      border: 0;
+      border-radius: 50%;
+
+      background: #252525;
+      color: #ffffff;
+
+      font-size: 18px;
+
+      cursor: pointer;
+    }
+
+    .remove-attachment:active {
+      background: #3a3a3a;
+    }
+
+    /* =========================
        INPUT AREA
        ========================= */
 
@@ -373,9 +499,7 @@
 
       padding: 6px;
 
-      border:
-        1px solid
-        #303030;
+      border: 1px solid #303030;
 
       border-radius: 18px;
 
@@ -462,6 +586,11 @@
       animation: micPulse 1.1s infinite;
     }
 
+    .attach-btn {
+      background: #222222;
+      color: #ffffff;
+    }
+
     @keyframes micPulse {
       0% {
         transform: scale(1);
@@ -503,10 +632,19 @@
     }
 
     /* =========================
+       HIDDEN FILE INPUTS
+       ========================= */
+
+    .hidden-file-input {
+      display: none;
+    }
+
+    /* =========================
        MOBILE
        ========================= */
 
     @media (max-width: 600px) {
+
       .header {
         height: 60px;
         min-height: 60px;
@@ -535,148 +673,206 @@
       .brand span {
         font-size: 10px;
       }
+
+      .message-image {
+        max-width: 210px;
+        max-height: 230px;
+      }
+
+      .input-box {
+        gap: 5px;
+      }
+
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      #messageInput {
+        font-size: 15px;
+      }
     }
-  </style>
-</head>
-
-<body>
-
-<div class="app">
-
-  <!-- =========================
+  </style></head><body><div class="app">  <!-- =========================
        HEADER
-       ========================= -->
+       ========================= -->  <header class="header"><div class="brand">
 
-  <header class="header">
+  <div class="logo">D</div>
 
-    <div class="brand">
+  <div>
+    <h1>DAB AI</h1>
+    <span>مساعدك الذكي</span>
+  </div>
 
-      <div class="logo">D</div>
+</div>
 
-      <div>
-        <h1>DAB AI</h1>
-        <span>مساعدك الذكي</span>
-      </div>
+<div class="menu-wrapper">
 
-    </div>
+  <button
+    class="menu-btn"
+    id="menuBtn"
+    type="button"
+    aria-label="القائمة">
+    ⋮
+  </button>
 
-    <div class="menu-wrapper">
+  <div
+    class="menu"
+    id="menu">
 
-      <button
-        class="menu-btn"
-        id="menuBtn"
-        type="button"
-        aria-label="القائمة">
-        ⋮
-      </button>
+    <button
+      type="button"
+      id="newChatBtn">
+      🆕 محادثة جديدة
+    </button>
 
-      <div
-        class="menu"
-        id="menu">
-
-        <button
-          type="button"
-          id="newChatBtn">
-          🆕 محادثة جديدة
-        </button>
-
-        <button
-          type="button"
-          id="closeMenuBtn">
-          ✕ إغلاق القائمة
-        </button>
-
-      </div>
-
-    </div>
-
-  </header>
-
-
-  <!-- =========================
-       CHAT
-       ========================= -->
-
-  <main
-    class="chat"
-    id="chat">
-
-    <div
-      class="welcome"
-      id="welcome">
-
-      <div class="welcome-logo">D</div>
-
-      <h2>
-        مرحبًا بك في DAB AI
-      </h2>
-
-      <p>
-        مساعدك الذكي للمحادثة والإجابة عن أسئلتك.<br>
-        اكتب رسالتك أو استخدم الميكروفون.
-      </p>
-
-    </div>
-
-  </main>
-
-
-  <!-- =========================
-       INPUT
-       ========================= -->
-
-  <div class="input-area">
-
-    <div class="input-box">
-
-      <button
-        class="icon-btn mic-btn"
-        id="micBtn"
-        type="button"
-        aria-label="تسجيل صوتي">
-        🎙️
-      </button>
-
-      <input
-        id="messageInput"
-        type="text"
-        placeholder="اكتب رسالتك..."
-        autocomplete="off"
-        enterkeyhint="send">
-
-      <button
-        class="icon-btn send-btn"
-        id="sendBtn"
-        type="button"
-        aria-label="إرسال">
-        ➤
-      </button>
-
-    </div>
-
-    <div
-      class="status"
-      id="status"
-      aria-live="polite">
-    </div>
+    <button
+      type="button"
+      id="closeMenuBtn">
+      ✕ إغلاق القائمة
+    </button>
 
   </div>
 
 </div>
 
+  </header>  <!-- =========================
+       CHAT
+       ========================= -->  <main
+    class="chat"
+    id="chat"><div
+  class="welcome"
+  id="welcome">
 
-<script>
+  <div class="welcome-logo">D</div>
+
+  <h2>
+    مرحبًا بك في DAB AI
+  </h2>
+
+  <p>
+    مساعدك الذكي للمحادثة والإجابة عن أسئلتك.<br>
+    اكتب رسالتك أو استخدم الميكروفون أو أرسل صورة أو ملف.
+  </p>
+
+</div>
+
+  </main>  <!-- =========================
+       INPUT AREA
+       ========================= -->  <div class="input-area"><!-- معاينة المرفق -->
+
+<div
+  class="attachment-preview"
+  id="attachmentPreview">
+
+  <div
+    id="previewVisual">
+  </div>
+
+  <div class="preview-info">
+
+    <div
+      class="preview-name"
+      id="previewName">
+    </div>
+
+    <div
+      class="preview-size"
+      id="previewSize">
+    </div>
+
+  </div>
+
+  <button
+    class="remove-attachment"
+    id="removeAttachmentBtn"
+    type="button"
+    aria-label="إزالة المرفق">
+    ✕
+  </button>
+
+</div>
+
+
+<div class="input-box">
+
+  <!-- زر الملف/الصورة -->
+
+  <button
+    class="icon-btn attach-btn"
+    id="attachBtn"
+    type="button"
+    aria-label="إرفاق صورة أو ملف">
+    📎
+  </button>
+
+  <!-- اختيار صورة -->
+
+  <input
+    class="hidden-file-input"
+    id="imageInput"
+    type="file"
+    accept="image/*">
+
+  <!-- اختيار أي ملف -->
+
+  <input
+    class="hidden-file-input"
+    id="fileInput"
+    type="file"
+    accept=".pdf,.txt,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.json,.zip,.jpg,.jpeg,.png">
+
+  <!-- الميكروفون -->
+
+  <button
+    class="icon-btn mic-btn"
+    id="micBtn"
+    type="button"
+    aria-label="تسجيل صوتي">
+    🎙️
+  </button>
+
+  <!-- النص -->
+
+  <input
+    id="messageInput"
+    type="text"
+    placeholder="اكتب رسالتك..."
+    autocomplete="off"
+    enterkeyhint="send">
+
+  <!-- الإرسال -->
+
+  <button
+    class="icon-btn send-btn"
+    id="sendBtn"
+    type="button"
+    aria-label="إرسال">
+    ➤
+  </button>
+
+</div>
+
+<div
+  class="status"
+  id="status"
+  aria-live="polite">
+</div>
+
+  </div></div><script>
 "use strict";
 
 /*
 =========================================================
  DAB AI
- الواجهة السوداء + المحادثة + التعرف على الصوت
- عبر Capacitor Speech Recognition
+ الواجهة السوداء
+ المحادثة
+ التعرف على الصوت
+ الصور
+ الملفات
 
- مهم:
- لا يوجد هنا API وهمي للذكاء الاصطناعي.
- الرد الحالي تجريبي كما في المشروع الأصلي.
+ ملاحظة:
+ الصور والملفات أصبحت جزءًا من واجهة التطبيق.
+ الربط الحقيقي مع الذكاء الاصطناعي سيتم في مرحلة API.
 =========================================================
 */
 
@@ -696,6 +892,30 @@ const micBtn =
 
 const sendBtn =
   document.getElementById("sendBtn");
+
+const attachBtn =
+  document.getElementById("attachBtn");
+
+const imageInput =
+  document.getElementById("imageInput");
+
+const fileInput =
+  document.getElementById("fileInput");
+
+const attachmentPreview =
+  document.getElementById("attachmentPreview");
+
+const previewVisual =
+  document.getElementById("previewVisual");
+
+const previewName =
+  document.getElementById("previewName");
+
+const previewSize =
+  document.getElementById("previewSize");
+
+const removeAttachmentBtn =
+  document.getElementById("removeAttachmentBtn");
 
 const menuBtn =
   document.getElementById("menuBtn");
@@ -721,9 +941,11 @@ let recording = false;
 
 let speechPlugin = null;
 
+let selectedAttachment = null;
+
 
 /* =====================================================
-   تغيير حالة الرسالة أسفل الإدخال
+   حالة الرسالة أسفل الإدخال
    ===================================================== */
 
 function setStatus(
@@ -742,6 +964,235 @@ function setStatus(
   if (type) {
     status.classList.add(type);
   }
+
+}
+
+
+/* =====================================================
+   تنسيق حجم الملف
+   ===================================================== */
+
+function formatFileSize(bytes) {
+
+  if (!bytes) {
+    return "0 بايت";
+  }
+
+  if (bytes < 1024) {
+    return bytes + " بايت";
+  }
+
+  if (bytes < 1024 * 1024) {
+    return (bytes / 1024).toFixed(1) + " KB";
+  }
+
+  if (bytes < 1024 * 1024 * 1024) {
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  return (bytes / (1024 * 1024 * 1024)).toFixed(1) + " GB";
+}
+
+
+/* =====================================================
+   فتح قائمة الإرفاق
+   ===================================================== */
+
+attachBtn.addEventListener(
+  "click",
+  function() {
+
+    /*
+    نافذة بسيطة لاختيار:
+    صورة أو ملف
+    */
+
+    const chooseImage =
+      confirm(
+        "ماذا تريد إرفاقه؟\n\n" +
+        "اضغط موافق لاختيار صورة.\n" +
+        "اضغط إلغاء لاختيار ملف."
+      );
+
+    if (chooseImage) {
+
+      imageInput.click();
+
+    } else {
+
+      fileInput.click();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   عند اختيار صورة
+   ===================================================== */
+
+imageInput.addEventListener(
+  "change",
+  function() {
+
+    const file =
+      imageInput.files &&
+      imageInput.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+
+      setStatus(
+        "هذا الملف ليس صورة.",
+        "error"
+      );
+
+      imageInput.value = "";
+
+      return;
+    }
+
+    setAttachment(file);
+
+  }
+);
+
+
+/* =====================================================
+   عند اختيار ملف
+   ===================================================== */
+
+fileInput.addEventListener(
+  "change",
+  function() {
+
+    const file =
+      fileInput.files &&
+      fileInput.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    setAttachment(file);
+
+  }
+);
+
+
+/* =====================================================
+   حفظ المرفق وعرض المعاينة
+   ===================================================== */
+
+function setAttachment(file) {
+
+  selectedAttachment =
+    file;
+
+  previewVisual.innerHTML =
+    "";
+
+  previewName.textContent =
+    file.name;
+
+  previewSize.textContent =
+    formatFileSize(file.size);
+
+  attachmentPreview.classList.add(
+    "show"
+  );
+
+
+  if (
+    file.type &&
+    file.type.startsWith("image/")
+  ) {
+
+    const img =
+      document.createElement("img");
+
+    img.className =
+      "preview-image";
+
+    img.alt =
+      "معاينة الصورة";
+
+    const objectUrl =
+      URL.createObjectURL(file);
+
+    img.src =
+      objectUrl;
+
+    previewVisual.appendChild(
+      img
+    );
+
+  } else {
+
+    const icon =
+      document.createElement("div");
+
+    icon.className =
+      "preview-file-icon";
+
+    icon.textContent =
+      "📄";
+
+    previewVisual.appendChild(
+      icon
+    );
+
+  }
+
+
+  setStatus(
+    "تم إرفاق: " + file.name,
+    "active"
+  );
+
+}
+
+
+/* =====================================================
+   إزالة المرفق
+   ===================================================== */
+
+removeAttachmentBtn.addEventListener(
+  "click",
+  removeAttachment
+);
+
+
+function removeAttachment() {
+
+  selectedAttachment =
+    null;
+
+  imageInput.value =
+    "";
+
+  fileInput.value =
+    "";
+
+  previewVisual.innerHTML =
+    "";
+
+  previewName.textContent =
+    "";
+
+  previewSize.textContent =
+    "";
+
+  attachmentPreview.classList.remove(
+    "show"
+  );
+
+  setStatus("");
+
 }
 
 
@@ -763,6 +1214,7 @@ function loadSpeechPlugin() {
         window.Capacitor.Plugins.SpeechRecognition;
 
       return speechPlugin;
+
     }
 
   } catch (error) {
@@ -779,7 +1231,7 @@ function loadSpeechPlugin() {
 
 
 /* =====================================================
-   هل إضافة الصوت موجودة؟
+   التأكد من وجود إضافة الصوت
    ===================================================== */
 
 function ensureSpeechPlugin() {
@@ -789,6 +1241,7 @@ function ensureSpeechPlugin() {
   }
 
   return loadSpeechPlugin();
+
 }
 
 
@@ -823,8 +1276,18 @@ function sendMessage() {
   const text =
     input.value.trim();
 
-  if (!text) {
+  /*
+  يمكن إرسال رسالة بدون نص إذا كان هناك
+  صورة أو ملف.
+  */
+
+  if (
+    !text &&
+    !selectedAttachment
+  ) {
+
     return;
+
   }
 
 
@@ -838,11 +1301,15 @@ function sendMessage() {
 
   addMessage(
     text,
-    "user"
+    "user",
+    selectedAttachment
   );
 
 
   input.value = "";
+
+  removeAttachment();
+
 
   setStatus(
     "جاري تجهيز الرد..."
@@ -851,8 +1318,8 @@ function sendMessage() {
 
   /*
   -------------------------------------------------------
-  الرد الحالي تجريبي فقط.
-  لن نضع API وهميًا هنا.
+  الذكاء الاصطناعي الحقيقي سيتم ربطه هنا لاحقًا.
+  لا يوجد API وهمي.
   -------------------------------------------------------
   */
 
@@ -860,7 +1327,7 @@ function sendMessage() {
     function() {
 
       addMessage(
-        "مرحبًا! أنا DAB AI 🤖\nتم استلام رسالتك بنجاح. سنربطني لاحقًا بمحرك الذكاء الاصطناعي الحقيقي.",
+        "تم استلام رسالتك والمرفق بنجاح. 🤖\nسنربط DAB AI الآن بمحرك الذكاء الاصطناعي الحقيقي لمعالجة النصوص والصور والملفات.",
         "ai"
       );
 
@@ -879,7 +1346,8 @@ function sendMessage() {
 
 function addMessage(
   text,
-  type
+  type,
+  attachment = null
 ) {
 
   const message =
@@ -896,8 +1364,80 @@ function addMessage(
     "bubble";
 
 
-  bubble.textContent =
-    text;
+  if (text) {
+
+    const textElement =
+      document.createElement("div");
+
+    textElement.textContent =
+      text;
+
+    bubble.appendChild(
+      textElement
+    );
+
+  }
+
+
+  /*
+  صورة
+  */
+
+  if (
+    attachment &&
+    attachment.type &&
+    attachment.type.startsWith("image/")
+  ) {
+
+    const img =
+      document.createElement("img");
+
+    img.className =
+      "message-image";
+
+    img.alt =
+      attachment.name;
+
+    img.src =
+      URL.createObjectURL(
+        attachment
+      );
+
+    bubble.appendChild(
+      img
+    );
+
+  }
+
+
+  /*
+  ملف
+  */
+
+  else if (
+    attachment
+  ) {
+
+    const fileBox =
+      document.createElement("div");
+
+    fileBox.className =
+      "message-file";
+
+    fileBox.textContent =
+      "📎 " +
+      attachment.name +
+      " (" +
+      formatFileSize(
+        attachment.size
+      ) +
+      ")";
+
+    bubble.appendChild(
+      fileBox
+    );
+
+  }
 
 
   message.appendChild(
@@ -930,6 +1470,9 @@ function newChat() {
 
   stopRecording();
 
+  removeAttachment();
+
+
   chat.innerHTML = `
     <div class="welcome" id="welcome">
 
@@ -941,7 +1484,7 @@ function newChat() {
 
       <p>
         مساعدك الذكي للمحادثة والإجابة عن أسئلتك.<br>
-        اكتب رسالتك أو استخدم الميكروفون.
+        اكتب رسالتك أو استخدم الميكروفون أو أرسل صورة أو ملف.
       </p>
 
     </div>
@@ -952,13 +1495,17 @@ function newChat() {
 
   setStatus("");
 
+
   menu.classList.remove(
     "show"
   );
 
+
   setTimeout(
     function() {
+
       input.focus();
+
     },
     100
   );
@@ -1039,6 +1586,7 @@ async function toggleRecording() {
     await stopRecording();
 
     return;
+
   }
 
   await startRecording();
@@ -1047,7 +1595,7 @@ async function toggleRecording() {
 
 
 /* =====================================================
-   تحويل خطأ الصوت إلى رسالة مفهومة
+   تحويل خطأ الصوت إلى رسالة
    ===================================================== */
 
 function getSpeechErrorMessage(
@@ -1144,6 +1692,7 @@ async function startRecording() {
     );
 
     return;
+
   }
 
 
@@ -1160,10 +1709,6 @@ async function startRecording() {
     );
 
 
-    /* -----------------------------------------------
-       طلب الصلاحية
-       ----------------------------------------------- */
-
     if (
       typeof plugin.requestPermissions ===
       "function"
@@ -1173,10 +1718,6 @@ async function startRecording() {
 
     }
 
-
-    /* -----------------------------------------------
-       فحص الصلاحية
-       ----------------------------------------------- */
 
     if (
       typeof plugin.checkPermissions ===
@@ -1208,14 +1749,11 @@ async function startRecording() {
         );
 
         return;
+
       }
 
     }
 
-
-    /* -----------------------------------------------
-       تشغيل حالة التسجيل
-       ----------------------------------------------- */
 
     recording = true;
 
@@ -1237,10 +1775,6 @@ async function startRecording() {
       "active"
     );
 
-
-    /* -----------------------------------------------
-       بدء التعرف
-       ----------------------------------------------- */
 
     const result =
       await plugin.start({
@@ -1264,10 +1798,6 @@ async function startRecording() {
       result
     );
 
-
-    /* -----------------------------------------------
-       قراءة النتيجة
-       ----------------------------------------------- */
 
     if (
       result &&
@@ -1434,7 +1964,5 @@ window.addEventListener(
   }
 );
 
-</script>
-
-</body>
+</script></body>
 </html>
