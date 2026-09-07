@@ -1,6 +1,6 @@
 name: Build DAB AI Android APK
 
-on:
+"on":
 workflow_dispatch:
 push:
 branches:
@@ -9,15 +9,14 @@ branches:
 jobs:
 build:
 runs-on: ubuntu-latest
-
 steps:
-  - name: Checkout
-    uses: actions/checkout@v4
+- name: Checkout
+uses: actions/checkout@v4
 
   - name: Setup Node.js
     uses: actions/setup-node@v4
     with:
-      node-version: 22
+      node-version: "22"
       cache: npm
 
   - name: Install dependencies
@@ -39,14 +38,8 @@ steps:
     uses: actions/setup-java@v5
     with:
       distribution: temurin
-      java-version: '21'
+      java-version: "21"
       cache: gradle
-
-  - name: Configure Android compatibility
-    working-directory: android
-    run: |
-      echo "===== Gradle files ====="
-      grep -R "minSdk\|targetSdk\|compileSdk" -n app/build.gradle* gradle.properties 2>/dev/null || true
 
   - name: Build Debug APK
     working-directory: android
@@ -57,26 +50,11 @@ steps:
   - name: Verify APK
     run: |
       APK="android/app/build/outputs/apk/debug/app-debug.apk"
-
-      echo "===== APK FILE ====="
+      test -f "$APK"
       ls -lh "$APK"
-
-      echo "===== APK TYPE ====="
-      file "$APK"
-
-      echo "===== APK SIGNATURE ====="
-      "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
-
-      echo "===== PACKAGE INFO ====="
-      "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -30
-
-  - name: Rename APK
-    run: |
-      cp android/app/build/outputs/apk/debug/app-debug.apk \
-         android/app/build/outputs/apk/debug/DAB-AI.apk
 
   - name: Upload APK
     uses: actions/upload-artifact@v4
     with:
       name: DAB-AI-APK
-      path: android/app/build/outputs/apk/debug/DAB-AI.apk
+      path: android/app/build/outputs/apk/debug/app-debug.apk
