@@ -1,86 +1,82 @@
 name: Build DAB AI Android APK
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+workflow_dispatch:
+push:
+branches:
+- main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+build:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 22
+      cache: npm
 
-      - name: Install dependencies
-        run: npm install
+  - name: Install dependencies
+    run: npm install
 
-      - name: Prepare web files
-        run: |
-          rm -rf www
-          mkdir -p www
-          cp index.html www/index.html
+  - name: Prepare web files
+    run: |
+      rm -rf www
+      mkdir -p www
+      cp index.html www/index.html
 
-      - name: Initialize Capacitor
-        run: npx cap add android
+  - name: Initialize Capacitor
+    run: npx cap add android
 
-      - name: Sync Capacitor
-        run: npx cap sync android
+  - name: Sync Capacitor
+    run: npx cap sync android
 
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '21'
-          cache: gradle
+  - name: Setup Java
+    uses: actions/setup-java@v5
+    with:
+      distribution: temurin
+      java-version: '21'
+      cache: gradle
 
-      - name: Configure Android compatibility
-        working-directory: android
-        run: |
-          echo "===== Gradle files ====="
-          grep -R "minSdk\|targetSdk\|compileSdk" -n app/build.gradle* gradle.properties 2>/dev/null || true
+  - name: Configure Android compatibility
+    working-directory: android
+    run: |
+      echo "===== Gradle files ====="
+      grep -R "minSdk\|targetSdk\|compileSdk" -n app/build.gradle* gradle.properties 2>/dev/null || true
 
-      - name: Build Debug APK
-        working-directory: android
-        run: |
-          chmod +x gradlew
-          ./gradlew clean assembleDebug --stacktrace
+  - name: Build Debug APK
+    working-directory: android
+    run: |
+      chmod +x gradlew
+      ./gradlew clean assembleDebug --stacktrace
 
-      - name: Verify APK
-        run: |
-          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+  - name: Verify APK
+    run: |
+      APK="android/app/build/outputs/apk/debug/app-debug.apk"
 
-          echo "===== APK FILE ====="
-          ls -lh "$APK"
+      echo "===== APK FILE ====="
+      ls -lh "$APK"
 
-          echo "===== APK TYPE ====="
-          file "$APK"
+      echo "===== APK TYPE ====="
+      file "$APK"
 
-          echo "===== APK SIGNATURE ====="
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
+      echo "===== APK SIGNATURE ====="
+      "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
 
-          echo "===== PACKAGE INFO ====="
-          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -30
+      echo "===== PACKAGE INFO ====="
+      "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | head -30
 
-      - name: Rename APK
-        run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk \
-             android/app/build/outputs/apk/debug/DAB-AI.apk
+  - name: Rename APK
+    run: |
+      cp android/app/build/outputs/apk/debug/app-debug.apk \
+         android/app/build/outputs/apk/debug/DAB-AI.apk
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: DAB-AI-APK
-          path: android/app/build/outputs/apk/debug/DAB-AI.apk
-
-**مهم:** لا تغيّر `capacitor.config.json` ولا `appId` الآن؛ أبقيه `com.dabai.app` حتى لا نحول التطبيق إلى تطبيق مختلف.
-
-بعد حفظ الملف، شغّل **Actions → Build DAB AI Android APK → Run workflow**. إذا نجح، أرسل لي نتيجة الـBuild الجديدة، وسأراجعها قبل أن تجرب التثبيت.
+  - name: Upload APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: DAB-AI-APK
+      path: android/app/build/outputs/apk/debug/DAB-AI.apk
